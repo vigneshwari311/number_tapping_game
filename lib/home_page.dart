@@ -2,6 +2,23 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:number_tap_game/widgets/tile.dart';
+import 'dart:js_interop';
+
+
+
+
+@JS('GameResult')
+@staticInterop
+class GameResult {
+  // Declaring postMessage as a static method
+  external static void postMessage(String message);
+}
+
+void postGameResult(String message) {
+  GameResult.postMessage(message); // Calling the static method
+}
+
+
 
 class GridTileData{
   final int values;
@@ -27,6 +44,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+
 
   List<GridTileData> finalList = [];
   int score =0;
@@ -119,8 +137,10 @@ void gameOverDialog(String msg){
       actions: [
         TextButton(
           onPressed: (){
+            postGameResult('{"score" : $score, "status": "win"}');
             Navigator.pop(context);
-            restartGame();
+            
+            //restartGame();
           }, 
           child: Text("Try Again"))
       ],
@@ -128,7 +148,7 @@ void gameOverDialog(String msg){
     ));
 }
 
-void gameWinDialog(){
+void gameWinDialog(){ 
   showDialog(
     context: context, 
     builder: (_) => AlertDialog(
@@ -137,8 +157,9 @@ void gameWinDialog(){
       actions: [
               TextButton(
                 onPressed: () {
+                  postGameResult('{"score" : $score, "status": "win"}');
                   Navigator.pop(context);
-                  restartGame();
+                  //restartGame();
                 },
                 child: Text("Play Again"),
               ),
